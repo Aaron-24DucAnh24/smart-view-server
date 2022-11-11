@@ -6,7 +6,7 @@ var server = require("http").createServer(app);
 const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-    res.send('This is the web')
+    res.send('This is the smart-view, an web-based application')
 })
 
 server.listen(port)
