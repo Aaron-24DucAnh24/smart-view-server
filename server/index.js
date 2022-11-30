@@ -1,11 +1,11 @@
 
 const express = require('express')
 const session = require('express-session')
-const route   = require('./src/route/index.route')
+const route   = require('./route/index.route')
 
 const app = express()
 var   server = require("http").createServer(app);
-const port = process.env.PORT || 2222;
+const port = process.env.PORT || 3000;
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
