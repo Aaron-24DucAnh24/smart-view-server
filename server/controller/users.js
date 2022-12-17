@@ -6,7 +6,11 @@ class UsersController
 {
     login(req, res) {
         connect(colName, login, req.body)
-        .then(data => res.json(data))
+        .then(data => {
+            req.session.user = data
+            req.session.save()
+            res.json(data)
+        })
         .catch(err => res.json({err: err}))
     }
 
@@ -22,8 +26,8 @@ class UsersController
         res.json(true)
     }
 
-    test(req, res) {
-        connect(colName, test)
+    all(req, res) {
+        connect(colName, all)
             .then(data => res.json(data))
             .catch(err => res.json({err: err}))
     }
@@ -31,15 +35,47 @@ class UsersController
 
 module.exports = new UsersController
 
-async function test(collection) {
+async function all(collection) {
     var result = await collection.find({}).toArray()
     return result
 }
 
-async function login() {
+async function login(collection, reqData) {
+    // query
+    var result = await collection.findOne({
+        loginName: reqData.loginName,
+        password: reqData.password,
+    })
 
+    // not found
+    if(!result) return null
+
+    // found
+    console.log('--> 1 record was accessed!')
+    return {
+        _id: result._id,
+        fname: result.fname,
+        lname: result.lname,
+        avatar: result.avatar,
+        role: result.role,
+    }
 }
 
-async function signIn() {
+async function signIn(collection, reqData) {
+    // query
+    var result = await collection.findOne({
+        loginName: reqData.loginName,
+        password: reqData.password,
+    })
 
+    // not found
+    if(!result) {
+        reqData.role = 'member'
+        await collection.insertOne(reqData)
+        console.log('--> 1 record was inserted!')
+        return 1
+    }
+
+    // found
+    return 0
 }

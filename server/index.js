@@ -1,7 +1,8 @@
 
-const express = require('express')
-const route   = require('./route/index')
-const session  = require('express-session')
+const express    = require('express')
+const route      = require('./route/index')
+const session    = require('express-session')
+const bodyParser = require('body-parser')
 
 const app = express()
 var   server = require("http").createServer(app);

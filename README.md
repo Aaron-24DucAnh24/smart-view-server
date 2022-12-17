@@ -31,15 +31,24 @@
 
     preview = project({title, authorInfo, view, like, firstImg}, post)
 
-* API:
+* API: all request data and response data are JSON
 
-    login  [post] http:/localhost:3000/users/login
-        - req {loginName: string, password: string}
-        - res 'admin' || 'member' || ''
+1.  login  [post] http:/localhost:3000/users/login
+        req {
+                loginName: string, 
+                password: string
+        }  
+        res {_id, fname, lname, avatar, role} || null           
 
-    logout [get]  http:/localhost:3000/users/logout
-        - res true
+2.  logout [get]  http:/localhost:3000/users/logout
+        res true
 
-    signIn [post] http:/localhost:3000/users/signIn
-        - req {loginName: string, password: string}
-        - res true || false
+3.  signIn [post] http:/localhost:3000/users/signIn
+        req {
+                fname: string,
+                lname: string,
+                loginName: string, 
+                password: string,
+                avatar: string      (set to be "" if no img uploaded)
+            }  
+        res 1 || 0
