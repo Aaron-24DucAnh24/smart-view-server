@@ -5,7 +5,7 @@ const colName  = 'users'
 class UsersController 
 {
     login(req, res) {
-        connect(colName, login, req.body)
+        connect(colName, login, req)
         .then(data => {
             req.session.user = data
             req.session.save()
@@ -15,7 +15,7 @@ class UsersController
     }
 
     signIn(req, res) {
-        connect(colName, signIn, req.body)
+        connect(colName, signIn, req)
             .then(data => res.json(data))
             .catch(err => res.json({err: err}))
     }
@@ -40,11 +40,11 @@ async function all(collection) {
     return result
 }
 
-async function login(collection, reqData) {
+async function login(collection, req) {
     // query
     var result = await collection.findOne({
-        loginName: reqData.loginName,
-        password: reqData.password,
+        loginName: req.body.loginName,
+        password: req.body.password,
     })
 
     // not found
@@ -61,17 +61,17 @@ async function login(collection, reqData) {
     }
 }
 
-async function signIn(collection, reqData) {
+async function signIn(collection, req) {
     // query
     var result = await collection.findOne({
-        loginName: reqData.loginName,
-        password: reqData.password,
+        loginName: req.body.loginName,
+        password: req.body.password,
     })
 
     // not found
     if(!result) {
-        reqData.role = 'member'
-        await collection.insertOne(reqData)
+        req.body.role = 'member'
+        await collection.insertOne(req.body)
         console.log('--> 1 record was inserted!')
         return 1
     }
