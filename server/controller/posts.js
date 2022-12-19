@@ -8,6 +8,12 @@ class PostsController {
         .then(data => res.json(data))
         .catch(err => res.json({err: err}))
     }
+
+    detail(req, res) {
+        connect('post', detail, req, 'users', 'likes', 'reports')
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
+    }
 }
 
 module.exports = new PostsController()
@@ -24,10 +30,11 @@ async function preview(col1, req, col2) {
             }
         ]).toArray()
 
-    var obId = new mongodb.ObjectId(req.session.user._id)
-    var likes = await col2.findOne({
-        userID: obId
-    })
+    var likes = null
+    if(req.session.user){
+        var obId = new mongodb.ObjectId(req.session.user._id)
+        likes = await col2.find({userID: obId}).toArray()
+    }
 
     for(var post of posts) {
         post.img = post.img[0]
@@ -42,8 +49,43 @@ async function preview(col1, req, col2) {
         delete post.authorDetail.role
         delete post.authorDetail.password
         delete post.authorDetail.loginName
-        if(likes) if(post._id.equals(likes.postID)) post.liked = true
+        if(likes)
+            for(var like of likes)
+                if(post._id.equals(like.postID)) 
+                    post.liked = true
     }
 
     return posts
+}
+
+async function detail(col1, req, col2, col3, col4) {
+    var postID = new mongodb.ObjectId(req.params.postID)
+    var postDetail = await col1.findOne(
+        {_id: postID},
+        {projection: {queued: 0, reported: 0, reportedNo: 0}}
+    )
+
+    var authorDetail = await col2.findOne(
+        {_id: postDetail.authorID},
+        {projection: {_id: 0, loginName: 0, password: 0, role: 0}}
+    )
+    
+    delete postDetail.authorID
+    postDetail.authorDetail = authorDetail
+
+    var likes = null
+    var reports = null
+    if(req.session.user){
+        var userID = new mongodb.ObjectId(req.session.user._id)
+        likes   = await col3.findOne({userID: userID, postID: postID})
+        reports = await col4.findOne({userID: userID, postID: postID})
+    }
+
+    if(likes) postDetail.liked = true
+    else postDetail.liked = false
+
+    if(reports) postDetail.reported = true
+    else postDetail.reported = false
+
+    return postDetail
 }
