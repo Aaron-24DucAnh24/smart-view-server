@@ -40,7 +40,7 @@
                         }
                 }]
 
-        5. detailed [get] http://localhost:3000/posts/:postID
+        5. getPost [get] http://localhost:3000/posts/:postID
                 res [{
                         _id: string
                         title: string

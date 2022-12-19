@@ -9,11 +9,25 @@ class PostsController {
         .catch(err => res.json({err: err}))
     }
 
-    detail(req, res) {
-        connect('post', detail, req, 'users', 'likes', 'reports')
+    getPost(req, res) {
+        connect('post', getPost, req, 'users', 'likes', 'reports')
         .then(data => res.json(data))
         .catch(err => res.json({err: err}))
     }
+
+    putPost(req, res) {
+        res.json('putPost API')
+    }
+
+    postPost(req, res) {
+        res.json('postPost API')
+    }
+
+    deletePost(req, res) {
+        res.json('deletePost API')
+    }
+
+    
 }
 
 module.exports = new PostsController()
@@ -58,7 +72,7 @@ async function preview(col1, req, col2) {
     return posts
 }
 
-async function detail(col1, req, col2, col3, col4) {
+async function getPost(col1, req, col2, col3, col4) {
     var postID = new mongodb.ObjectId(req.params.postID)
     var postDetail = await col1.findOne(
         {_id: postID},

@@ -1,5 +1,4 @@
 
-
 class Middleware {
 
     isLogged(req, res, next) {
