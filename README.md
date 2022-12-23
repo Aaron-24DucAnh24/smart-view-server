@@ -5,7 +5,9 @@
 
 * Open route folder to see detailed API path
 
-* API: all request data and response data are in JSON format
+* API: 
+- All request data and response data are in JSON format
+- All the response messages below are under the normal conditions, if there were problems with database, connection, bandwidth,... response messages would be {err: error}
 
         1.  login  [post] http://localhost:3000/users/login
                 req { loginName: string, password: string}  
@@ -84,3 +86,14 @@
                                 img: string (base64)
                         }
                 }]
+
+        8. (admin) deletePost [delete] http://localhost:3000/admin/:postID
+                res 1
+
+        9. (admin) approvePost [get] http://localhost:3000/admin/approve?postID=...
+                res 1
+
+                (Hiện tại đang ẩn các dòng delete và approve record đi,
+                khi nào có tính năng thêm bài viết thì mới xoá thật,
+                do nguồn tài nguyên có hạn :))))
+

@@ -16,11 +16,15 @@ class AdminController {
     }
 
     deletePost(req, res) {
-
+        connect('post', deletePost, req)
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
     }
 
     approvePost(req, res) {
-        res.json(req.query.postID)
+        connect('post', approvePost, req)
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
     }
 }
 
@@ -82,4 +86,19 @@ async function getPost(col1, req, col2) {
     postDetail.authorDetail = authorDetail
 
     return postDetail
+}
+
+async function deletePost(col1, req) {
+    var postID = new mongodb.ObjectId(req.params.postID)
+    // await col1.deleteOne({_id: postID})
+    return 1
+}
+
+async function approvePost(col1, req) {
+    var postID = new mongodb.ObjectId(req.query.postID)
+    await col1.updateOne(
+        {_id: postID}, 
+        {$set: {reported: false, queued: false}}
+    )
+    return 1
 }
