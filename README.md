@@ -5,17 +5,17 @@
 
 * Open route folder to see detailed API path
 
-* API: all request data and response data are JSON
+* API: all request data and response data are in JSON format
 
-        1.  login  [post] http:/localhost:3000/users/login
+        1.  login  [post] http://localhost:3000/users/login
                 req { loginName: string, password: string}  
                 res {_id, fname, lname, avatar, role} || null           
 
-        2.  logout [get]  http:/localhost:3000/users/logout  
+        2.  logout [get]  http://localhost:3000/users/logout  
                 (require logging)
                 res true
 
-        3.  signIn [post] http:/localhost:3000/users/signIn
+        3.  signIn [post] http://localhost:3000/users/signIn
                 req {
                         fname: string,
                         lname: string,
@@ -47,9 +47,37 @@
                         view: int32
                         like: int32
                         content: string
-                        img: string (base64)
+                        img: [string (base64)]
                         liked:    boolean (if the current user liked the post or not)
                         reported: boolean (if the current user reported the post or not)
+                        authorDetail: {
+                                fname: string
+                                lname: string
+                                img: string (base64)
+                        }
+                }]
+        
+        6. (admin) preview [get] http://localhost:3000/admin/preview
+                res [{
+                        _id: string
+                        title: string
+                        authorDetail: {
+                                fname: string
+                                lname: string
+                                img: string (base64)
+                        }
+                        type: 0(queued posts) || 0(reported posts)
+                }]
+
+        7. (admin) getPost [get] http://localhost:3000/admin/:postID
+                res [{
+                        _id: string
+                        title: string
+                        view: int32
+                        like: int32
+                        reportedNo: int32
+                        content: string
+                        img: [string (base64)]
                         authorDetail: {
                                 fname: string
                                 lname: string

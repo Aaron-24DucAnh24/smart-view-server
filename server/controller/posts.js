@@ -3,6 +3,7 @@ const connect = require('../model/config')
 const mongodb = require('mongodb')
 
 class PostsController {
+
     preview(req, res)  {
         connect('post', preview, req, 'likes')
         .then(data => res.json(data))
@@ -27,7 +28,6 @@ class PostsController {
         res.json('deletePost API')
     }
 
-    
 }
 
 module.exports = new PostsController()
@@ -50,26 +50,31 @@ async function preview(col1, req, col2) {
         likes = await col2.find({userID: obId}).toArray()
     }
 
+    var result = []
     for(var post of posts) {
-        post.img = post.img[0]
-        post.liked = false
-        delete post.content
-        delete post.queued
-        delete post.reportedNo
-        delete post.reported
-        delete post.authorID
-        post.authorDetail = post.authorDetail[0]
-        delete post.authorDetail._id
-        delete post.authorDetail.role
-        delete post.authorDetail.password
-        delete post.authorDetail.loginName
-        if(likes)
-            for(var like of likes)
-                if(post._id.equals(like.postID)) 
-                    post.liked = true
+        if(!post.queued && !post.reported){
+            post.img = post.img[0]
+            post.liked = false
+            delete post.content
+            delete post.queued
+            delete post.reportedNo
+            delete post.reported
+            delete post.authorID
+            post.authorDetail = post.authorDetail[0]
+            delete post.authorDetail._id
+            delete post.authorDetail.role
+            delete post.authorDetail.password
+            delete post.authorDetail.loginName
+            if(likes)
+                for(var like of likes)
+                    if(post._id.equals(like.postID)) 
+                        post.liked = true
+    
+            result.push(post)
+        }
     }
 
-    return posts
+    return result
 }
 
 async function getPost(col1, req, col2, col3, col4) {
