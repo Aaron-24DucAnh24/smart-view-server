@@ -96,9 +96,9 @@ async function deletePost(col1, req) {
 
 async function approvePost(col1, req) {
     var postID = new mongodb.ObjectId(req.query.postID)
-    await col1.updateOne(
-        {_id: postID}, 
-        {$set: {reported: false, queued: false}}
-    )
+    // await col1.updateOne(
+    //     {_id: postID}, 
+    //     {$set: {reported: false, queued: false}}
+    // )
     return 1
 }
