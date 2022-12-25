@@ -1,12 +1,14 @@
 
-const express    = require('express')
-const route      = require('./route/index')
-const session    = require('express-session')
+const express = require('express')
+const route   = require('./route/index')
+const session = require('express-session')
+const cors    = require('cors')
 
 const app = express()
 var   server = require("http").createServer(app);
 const port = process.env.PORT || 3000;
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(session({
