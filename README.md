@@ -1,3 +1,4 @@
+* Link to access db on Compass: mongodb+srv://aaron:smartviewapp@cluster0.3c3cero.mongodb.net/test
 
 * To install all packages: > npm install
 
