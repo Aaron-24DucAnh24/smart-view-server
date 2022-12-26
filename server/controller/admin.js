@@ -98,7 +98,7 @@ async function approvePost(col1, req) {
     var postID = new mongodb.ObjectId(req.query.postID)
     // await col1.updateOne(
     //     {_id: postID}, 
-    //     {$set: {reported: false, queued: false}}
+    //     {$set: {reported: false, queued: false, reportedNo: 0}}
     // )
     return 1
 }

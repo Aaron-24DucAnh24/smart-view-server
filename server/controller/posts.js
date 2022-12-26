@@ -16,18 +16,32 @@ class PostsController {
         .catch(err => res.json({err: err}))
     }
 
+    /// Bảo
     putPost(req, res) {
         res.json('putPost API')
     }
 
+    /// Bảo
     postPost(req, res) {
         res.json('postPost API')
     }
 
+    /// Bảo
     deletePost(req, res) {
         res.json('deletePost API')
     }
 
+    likePost(req, res) {
+        connect('post', likePost, req, 'likes')
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
+    }
+
+    reportPost(req, res) {
+        connect('post', reportPost, req, 'reports')
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
+    }
 }
 
 module.exports = new PostsController()
@@ -79,6 +93,10 @@ async function preview(col1, req, col2) {
 
 async function getPost(col1, req, col2, col3, col4) {
     var postID = new mongodb.ObjectId(req.params.postID)
+    await col1.updateOne(
+        {_id: postID},
+        {$inc: {view: 1}}
+    )
     var postDetail = await col1.findOne(
         {_id: postID},
         {projection: {queued: 0, reported: 0, reportedNo: 0}}
@@ -107,4 +125,52 @@ async function getPost(col1, req, col2, col3, col4) {
     else postDetail.reported = false
 
     return postDetail
+}
+
+async function likePost(col1, req, col2) {
+    var postID = new mongodb.ObjectId(req.query.postID)
+    var userID = new mongodb.ObjectId(req.session.user._id)
+    var likes = await col2.findOne({userID: userID, postID: postID})
+
+    if(likes) {
+        await col2.deleteOne({userID: userID, postID: postID})
+        await col1.updateOne(
+            {_id: postID},
+            {$inc: {like: -1}}
+        )
+    }
+
+    else {
+        await col2.insertOne({userID: userID, postID: postID})
+        await col1.updateOne(            
+            {_id: postID},
+            {$inc: {like: 1}}
+        )
+    }
+
+    return 1
+}
+
+async function reportPost(col1, req, col2) {
+    var postID = new mongodb.ObjectId(req.query.postID)
+    var userID = new mongodb.ObjectId(req.session.user._id)
+    var reports = await col2.findOne({userID: userID, postID: postID})
+
+    if(reports) {
+        await col2.deleteOne({userID: userID, postID: postID})
+        await col1.updateOne(
+            {_id: postID},
+            {$inc: {reportedNo: -1}}
+        )
+    }
+
+    else {
+        await col2.insertOne({userID: userID, postID: postID})
+        await col1.updateOne(            
+            {_id: postID},
+            {$inc: {reportedNo: 1}}
+        )
+    }
+
+    return 1
 }

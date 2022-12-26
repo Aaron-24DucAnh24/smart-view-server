@@ -1,4 +1,5 @@
-* Link to access db on Compass: mongodb+srv://aaron:smartviewapp@cluster0.3c3cero.mongodb.net/test
+* Link to access db on Compass app: mongodb+srv://aaron:smartviewapp@cluster0.3c3cero.mongodb.net/test
+* Link to access db on Node app: mongodb+srv://aaron:smartviewapp@cluster0.3c3cero.mongodb.net/?retryWrites=true&w=majority
 
 * To install all packages: > npm install
 
@@ -10,15 +11,15 @@
 - All request data and response data are in JSON format
 - All the response messages below are under the normal conditions, if there were problems with database, connection, bandwidth,... response messages would be {err: error}
 
-        1.  login  [post] http://localhost:3000/users/login
+        -  login  [post] http://localhost:3000/users/login
                 req { loginName: string, password: string}  
                 res {_id, fname, lname, avatar, role} || null           
 
-        2.  logout [get]  http://localhost:3000/users/logout  
+        -  logout [get]  http://localhost:3000/users/logout  
                 (require logging)
                 res true
 
-        3.  signIn [post] http://localhost:3000/users/signIn
+        -  signIn [post] http://localhost:3000/users/signIn
                 req {
                         fname: string,
                         lname: string,
@@ -28,12 +29,13 @@
                 }  
                 res 1 || 0
 
-        4. preview [get] http://localhost:3000/posts/preview
+        - preview [get] http://localhost:3000/posts/preview
                 res [{
                         _id: string
                         title: string
                         view: int32
                         like: int32
+                        tag: [string]
                         img: string (base64)
                         liked: boolean (if the current user liked the post or not)
                         authorDetail: {
@@ -43,12 +45,13 @@
                         }
                 }]
 
-        5. getPost [get] http://localhost:3000/posts/:postID
+        - getPost [get] http://localhost:3000/posts/:postID
                 res [{
                         _id: string
                         title: string
                         view: int32
                         like: int32
+                        tag: [string]
                         content: string
                         img: [string (base64)]
                         liked:    boolean (if the current user liked the post or not)
@@ -59,8 +62,16 @@
                                 img: string (base64)
                         }
                 }]
-        
-        6. (admin) preview [get] http://localhost:3000/admin/preview
+
+        - reportPost [get] http://localhost:3000/posts/report?postID=...
+                (require logging)
+                res 1
+
+        - likePost [get] http://localhost:3000/posts/like?postID=...
+                (require logging)
+                res 1
+
+        - (admin) preview [get] http://localhost:3000/admin/preview
                 res [{
                         _id: string
                         title: string
@@ -72,7 +83,7 @@
                         type: 0(queued posts) || 0(reported posts)
                 }]
 
-        7. (admin) getPost [get] http://localhost:3000/admin/:postID
+        - (admin) getPost [get] http://localhost:3000/admin/:postID
                 res [{
                         _id: string
                         title: string
@@ -88,13 +99,8 @@
                         }
                 }]
 
-        8. (admin) deletePost [delete] http://localhost:3000/admin/:postID
+        - (admin) deletePost [delete] http://localhost:3000/admin/:postID
                 res 1
 
-        9. (admin) approvePost [get] http://localhost:3000/admin/approve?postID=...
+        - (admin) approvePost [get] http://localhost:3000/admin/approve?postID=...
                 res 1
-
-                (Hiện tại đang ẩn các dòng delete và approve record đi,
-                khi nào có tính năng thêm bài viết thì mới xoá thật,
-                do nguồn tài nguyên có hạn :))))
-
