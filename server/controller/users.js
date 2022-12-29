@@ -9,6 +9,7 @@ class UsersController
         .then(data => {
             req.session.user = data
             req.session.save()
+            console.log(req.body)
             res.json(data)
         })
         .catch(err => res.json({err: err}))
