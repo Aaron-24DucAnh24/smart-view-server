@@ -9,7 +9,6 @@ class UsersController
         .then(data => {
             req.session.user = data
             req.session.save()
-            console.log(req.body)
             res.json(data)
         })
         .catch(err => res.json({err: err}))
@@ -52,7 +51,6 @@ async function login(collection, req) {
     if(!result) return null
 
     // found
-    console.log('--> 1 record was accessed!')
     return {
         _id: result._id,
         fname: result.fname,

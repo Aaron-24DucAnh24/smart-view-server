@@ -5,9 +5,9 @@ const session = require('express-session')
 const cors    = require('cors')
 const form    = require('multer')()
 
-const app  = express()
-var server = require("http").createServer(app)
-const port = process.env.PORT || 3000
+const app     = express()
+var server    = require("http").createServer(app)
+const port    = process.env.PORT || 3000
 
 app.use(cors())
 app.use(express.json())
