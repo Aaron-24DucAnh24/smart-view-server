@@ -8,7 +8,7 @@ router.get('/report', middleware.isLogged, postsController.reportPost)
 router.get('/like', middleware.isLogged, postsController.likePost)
 router.get('/:postID', postsController.getPost)
 
-/// Bảo
+// Bảo
 router.put('/:postID', middleware.isLogged, postsController.putPost)
 router.post('/:postID', middleware.isLogged, postsController.postPost)
 router.delete('/:postID', middleware.isLogged, postsController.deletePost)

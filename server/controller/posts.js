@@ -16,17 +16,17 @@ class PostsController {
         .catch(err => res.json({err: err}))
     }
 
-    /// Bảo
+    // Bảo
     putPost(req, res) {
         res.json('putPost API')
     }
 
-    /// Bảo
+    // Bảo
     postPost(req, res) {
         res.json('postPost API')
     }
 
-    /// Bảo
+    // Bảo
     deletePost(req, res) {
         res.json('deletePost API')
     }
