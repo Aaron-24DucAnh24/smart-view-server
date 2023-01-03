@@ -147,4 +147,20 @@
                 }
 
                 res 1 || 0
-                
+
+        - topLike [get] http://localhost:3000/posts/topLike
+        - trending [get] http://localhost:3000/posts/trending
+                res [{
+                        _id: string
+                        title: string
+                        view: int32
+                        like: int32
+                        tag: [string]
+                        img: string (base64)
+                        liked: boolean (if the current user liked the post or not)
+                        authorDetail: {
+                                fname: string
+                                lname: string
+                                img: string (base64)
+                        }
+                }]
