@@ -51,6 +51,18 @@ class PostsController {
         .then(data => res.json(data))
         .catch(err => res.json({err: err}))
     }
+
+    trending(req, res) {
+        connect('post', trending, req, 'likes')
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
+    }
+
+    topLike(req, res) {
+        connect('post', topLike, req, 'likes')
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
+    }
 }
 
 module.exports = new PostsController()
@@ -258,4 +270,100 @@ async function putPost(col1, req) {
     }
 
     return 0
+}
+
+async function trending(col1, req, col2) {
+    var posts = await col1.aggregate([
+        {$lookup:
+            {
+                from: 'users',
+                localField: 'authorID',
+                foreignField: '_id',
+                as: 'authorDetail'
+            }
+        }
+    ]).toArray()
+
+    var likes = null
+    if(req.session.user){
+        var obId = new mongodb.ObjectId(req.session.user._id)
+        likes = await col2.find({userID: obId}).toArray()
+    }
+
+    var result = []
+    for(var post of posts) {
+        if(!post.queued && !post.reported){
+            post.img = post.img[0]
+            post.liked = false
+            delete post.content
+            delete post.queued
+            delete post.reportedNo
+            delete post.reported
+            delete post.authorID
+            post.authorDetail = post.authorDetail[0]
+            delete post.authorDetail._id
+            delete post.authorDetail.role
+            delete post.authorDetail.password
+            delete post.authorDetail.loginName
+            if(likes)
+                for(var like of likes)
+                    if(post._id.equals(like.postID)) 
+                        post.liked = true
+
+            result.push(post)
+        }
+    }
+
+    result.sort(function(a, b){return b.view - a.view})
+    if(result.length >= 20) result = result.slice(0, 20)
+
+    return result
+}
+
+async function topLike(col1, req, col2) {
+    var posts = await col1.aggregate([
+        {$lookup:
+            {
+                from: 'users',
+                localField: 'authorID',
+                foreignField: '_id',
+                as: 'authorDetail'
+            }
+        }
+    ]).toArray()
+
+    var likes = null
+    if(req.session.user){
+        var obId = new mongodb.ObjectId(req.session.user._id)
+        likes = await col2.find({userID: obId}).toArray()
+    }
+
+    var result = []
+    for(var post of posts) {
+        if(!post.queued && !post.reported){
+            post.img = post.img[0]
+            post.liked = false
+            delete post.content
+            delete post.queued
+            delete post.reportedNo
+            delete post.reported
+            delete post.authorID
+            post.authorDetail = post.authorDetail[0]
+            delete post.authorDetail._id
+            delete post.authorDetail.role
+            delete post.authorDetail.password
+            delete post.authorDetail.loginName
+            if(likes)
+                for(var like of likes)
+                    if(post._id.equals(like.postID)) 
+                        post.liked = true
+
+            result.push(post)
+        }
+    }
+
+    result.sort(function(a, b){return b.like - a.like})
+    if(result.length >= 20) result = result.slice(0, 20)
+
+    return result
 }

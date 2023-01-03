@@ -5,7 +5,7 @@ const middleware = require('../middleware')
 
 router.post('/login', usersController.login)
 router.post('/signIn', usersController.signIn)
-router.get('/logout', middleware.isLogged, usersController.logout)
+router.get('/logout', usersController.logout)
 router.get('/all', usersController.all)
 
 module.exports = router
