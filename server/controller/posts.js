@@ -173,9 +173,11 @@ async function likePost(col1, req, col2) {
 }
 
 async function reportPost(col1, req, col2) {
-    var postID = new mongodb.ObjectId(req.query.postID)
-    var userID = new mongodb.ObjectId(req.session.user._id)
+    var postID  = new mongodb.ObjectId(req.query.postID)
+    var userID  = new mongodb.ObjectId(req.session.user._id)
     var reports = await col2.findOne({userID: userID, postID: postID})
+    var post    = await col1.findOne({_id: postID})
+    var isReported = (post.reportedNo === 9)
 
     if(reports) {
         await col2.deleteOne({userID: userID, postID: postID})
@@ -189,7 +191,7 @@ async function reportPost(col1, req, col2) {
         await col2.insertOne({userID: userID, postID: postID})
         await col1.updateOne(            
             {_id: postID},
-            {$inc: {reportedNo: 1}}
+            {$inc: {reportedNo: 1}, $set: {reported: isReported}}
         )
     }
 
