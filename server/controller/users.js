@@ -61,20 +61,21 @@ async function login(collection, req) {
 }
 
 async function signIn(collection, req) {
-    // query
     var result = await collection.findOne({
         loginName: req.body.loginName,
         password: req.body.password,
     })
 
-    // not found
-    if(!result) {
-        req.body.role = 'member'
-        await collection.insertOne(req.body)
-        console.log('--> 1 record was inserted!')
-        return 1
+    if(req.body.fname 
+        && req.body.lname 
+        && req.body.loginName 
+        && req.body.password
+        && !result) {
+            req.body.role = 'member'
+            await collection.insertOne(req.body)
+            console.log('--> 1 record was inserted!')
+            return 1
     }
 
-    // found
     return 0
 }

@@ -9,6 +9,12 @@ class PostsController {
         .then(data => res.json(data))
         .catch(err => res.json({err: err}))
     }
+    
+    myPost(req, res) {
+        connect('post', myPost, req, 'likes')
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
+    }
 
     getPost(req, res) {
         connect('post', getPost, req, 'users', 'likes', 'reports')
@@ -16,19 +22,22 @@ class PostsController {
         .catch(err => res.json({err: err}))
     }
 
-    /// Bảo
     putPost(req, res) {
-        res.json('putPost API')
+        connect('post', putPost, req)
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
     }
 
-    /// Bảo
     postPost(req, res) {
-        res.json('postPost API')
+        connect('post', postPost, req)
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
     }
 
-    /// Bảo
     deletePost(req, res) {
-        res.json('deletePost API')
+        connect('post', deletePost, req)
+        .then(data => res.json(data))
+        .catch(err => res.json({err: err}))
     }
 
     likePost(req, res) {
@@ -173,4 +182,80 @@ async function reportPost(col1, req, col2) {
     }
 
     return 1
+}
+
+async function myPost(col1, req, col2) {
+    var authorID  = new mongodb.ObjectId(req.session.user._id)
+
+    var posts = await col1.find(
+        {authorID: authorID, queued: false, reported: false},
+        {projection: {queued: 0, reported: 0, reportedNo: 0, content: 0}}
+    ).toArray()
+
+    var likes = await col2.find({userID: authorID}).toArray()
+
+    for(var post of posts) {
+        post.img = post.img[0]
+        delete post.authorID
+        post.authorDetail = {
+            fname: req.session.user.fname,
+            lname: req.session.user.lname,
+            avatar: req.session.user.avatar
+        }
+        post.liked = false
+        for(var like of likes)
+            if(post._id.equals(like.postID)) 
+                post.liked = true
+    }
+
+    return posts
+}
+
+async function postPost(col1, req) {
+    if(req.body.title && req.body.content) {
+        var post = {
+            title: req.body.title,
+            content: req.body.content,
+            tag: req.body.tag,
+            img: req.body.img,
+            view: 0,
+            like: 0,
+            queued: true,
+            reported: false, 
+            authorID: new mongodb.ObjectId(req.session.user._id),
+            reportedNo: 0,
+        }
+        await col1.insertOne(post)
+    
+        return 1
+    }
+
+    return 0
+}
+
+async function deletePost(col1, req) {
+    var postID = new mongodb.ObjectId(req.params.postID)
+    var userID = new mongodb.ObjectId(req.session.user._id)
+    var post = await col1.findOne({_id: postID})
+    if(post) if(post.authorID.equals(userID)){
+        await col1.deleteOne({_id: postID})
+        return 1
+    }
+    return 0
+}
+
+async function putPost(col1, req) {
+    var postID = new mongodb.ObjectId(req.params.postID)
+    if(req.body.title && req.body.content) {
+        var post = {
+            title: req.body.title,
+            content: req.body.content,
+            tag: req.body.tag,
+            img: req.body.img,
+        }
+        await col1.updateOne({_id: postID}, {$set: post})
+        return 1
+    }
+
+    return 0
 }
