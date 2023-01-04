@@ -9,10 +9,11 @@ const app     = express()
 var server    = require("http").createServer(app)
 const port    = process.env.PORT || 3000
 
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(cors({credentials: true, origin: true}))
+app.use(express.json({limit: '50mb'}))
+app.use(express.urlencoded({limit: '50mb'}))
 app.use(form.array())
+app.set('trust proxy', 1)
 app.use(session({
     secret: 'session', 
     resave: false, 

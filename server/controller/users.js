@@ -48,7 +48,8 @@ async function login(collection, req) {
     })
 
     // not found
-    if(!result) return null
+    if(!result)
+        return null
 
     // found
     return {
