@@ -230,8 +230,8 @@ async function postPost(col1, req) {
         var post = {
             title: req.body.title,
             content: req.body.content,
+            img: [],
             tag: req.body.tag,
-            img: req.body.img,
             view: 0,
             like: 0,
             queued: true,
@@ -239,6 +239,11 @@ async function postPost(col1, req) {
             authorID: new mongodb.ObjectId(req.session.user._id),
             reportedNo: 0,
         }
+
+        for(var obImg of req.body.img) {
+            post.img.push(obImg.data_url)
+        }
+
         await col1.insertOne(post)
     
         return 1
