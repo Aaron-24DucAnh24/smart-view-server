@@ -90,15 +90,15 @@ async function getPost(col1, req, col2) {
 
 async function deletePost(col1, req) {
     var postID = new mongodb.ObjectId(req.params.postID)
-    // await col1.deleteOne({_id: postID})
+    await col1.deleteOne({_id: postID})
     return 1
 }
 
 async function approvePost(col1, req) {
     var postID = new mongodb.ObjectId(req.query.postID)
-    // await col1.updateOne(
-    //     {_id: postID}, 
-    //     {$set: {reported: false, queued: false, reportedNo: 0}}
-    // )
+    await col1.updateOne(
+        {_id: postID}, 
+        {$set: {reported: false, queued: false, reportedNo: 0}}
+    )
     return 1
 }
