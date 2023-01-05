@@ -202,7 +202,7 @@ async function myPost(col1, req, col2) {
     var authorID  = new mongodb.ObjectId(req.session.user._id)
 
     var posts = await col1.find(
-        {authorID: authorID, queued: false, reported: false},
+        {authorID: authorID},
         {projection: {queued: 0, reported: 0, reportedNo: 0, content: 0}}
     ).toArray()
 
@@ -226,11 +226,12 @@ async function myPost(col1, req, col2) {
 }
 
 async function postPost(col1, req) {
+    console.log(req.body.img)
     if(req.body.title && req.body.content) {
         var post = {
             title: req.body.title,
             content: req.body.content,
-            img: [],
+            img: req.body.img,
             tag: req.body.tag,
             view: 0,
             like: 0,
@@ -238,10 +239,6 @@ async function postPost(col1, req) {
             reported: false, 
             authorID: new mongodb.ObjectId(req.session.user._id),
             reportedNo: 0,
-        }
-
-        for(var obImg of req.body.img) {
-            post.img.push(obImg.data_url)
         }
 
         await col1.insertOne(post)
