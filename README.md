@@ -1,13 +1,15 @@
 * Link to access db on Compass app: mongodb+srv://aaron:smartviewapp@cluster0.3c3cero.mongodb.net/test
 * Link to access db on Node app: mongodb+srv://aaron:smartviewapp@cluster0.3c3cero.mongodb.net/?retryWrites=true&w=majority
 
-* To install all packages: > npm install
+### To  use
+```bash
+npm install
+npm run server
+```
 
-* To start server:         > npm run server
+*Open route folder to see detailed API path
 
-* Open route folder to see detailed API path
-
-* API: 
+### API: 
 - All request data and response data are in JSON format
 - All the response messages below are under the normal conditions, if there were problems with database, connection, bandwidth,... response messages would be {err: error}
 
